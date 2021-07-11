@@ -1,0 +1,17 @@
+.MuiTab-textColorInherit {
+  opacity: 1 !important;
+}
+.MuiTab-textColorInherit.Mui-selected {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+@media (min-width: 600px) {
+  .MuiTab-root {
+    min-height: 38px !important;
+
+  }
+}
+.MuiTabs-flexContainer {
+    display: flex;
+    float: right;
+}
