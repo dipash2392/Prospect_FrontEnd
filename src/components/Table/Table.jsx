@@ -21,6 +21,7 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Pagination from '@material-ui/lab/Pagination';
+import AddModal from "../AddModal/AddModal"
 
 function createData(name, demo, source, addedBy, date, setType, many, details) {
   return { name, demo, source, addedBy, date, setType, many, details };
@@ -131,8 +132,8 @@ EnhancedTableHead.propTypes = {
 
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    // paddingLeft: theme.spacing(2),
+    // paddingRight: theme.spacing(1),
   },
   highlight:
     theme.palette.type === "light"
@@ -203,7 +204,6 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    marginTop: theme.spacing(5),
   },
   paper: {
     width: "100%",
@@ -232,6 +232,7 @@ export default function EnhancedTable() {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
+  const [openAddModal,setOpenAddModal] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const StyledTableCell = withStyles((theme) => ({
@@ -306,7 +307,7 @@ export default function EnhancedTable() {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper}><hr style={{margin:0}}/>
         <TableContainer>
           <Table
             className={classes.table}
@@ -380,10 +381,13 @@ export default function EnhancedTable() {
                 })}
               <TableRow>
                 {/* <TableCell rowSpan={3} /> */}
-                <TableCell colSpan={2}>Add Prospect Set</TableCell>
-                <TableCell colSpan={2}>Add Prospect Set</TableCell>
-                <TableCell colSpan={2}>Add Prospect Set</TableCell>
-                <TableCell colSpan={1}>Add Prospect Set</TableCell>
+                <TableCell className="font-weight-bold" colSpan={2} onClick={()=>{
+                  console.log(openAddModal)
+                  setOpenAddModal(true)
+                }}>Add Prospect Set</TableCell>
+                <TableCell colSpan={2}>Delete Prospect Set</TableCell>
+                <TableCell colSpan={2}>Edit Prospect Set</TableCell>
+                <TableCell className="font-weight-bold" colSpan={1}>Import Prospect Set</TableCell>
                 <TableCell colSpan={3} align="right">
                 <Pagination count={10} page={page} size="small"   onPageChange={handleChangePage} />
                   {/* <TablePagination
@@ -409,6 +413,9 @@ export default function EnhancedTable() {
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
+      />
+      <AddModal
+      isOpen={openAddModal}
       />
     </div>
   );

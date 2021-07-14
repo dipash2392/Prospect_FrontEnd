@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import TabContext from '@material-ui/lab/TabContext';
 import TabPanel from '@material-ui/lab/TabPanel';
 import Customer from "../Customer/Customer"
-import Table from "../Table/Table"
 import "./subTabs.css"
 
 const AntTabs = withStyles({
@@ -80,13 +79,14 @@ export default function CustomizedTabs() {
       <div className={classes.demo1}>
       <TabContext value={value}>
         <AntTabs value={value} onChange={handleChange} aria-label="ant example" style={{float:"left"}}>
-          <AntTab label="Customer" value="1" selected/>
-          <AntTab label="Prospect Customer" value="2"/>
-          <AntTab label="Employee" value="3" />
-          <AntTab label="Test Set" value="4" />
+          <AntTab className="font-weight-bold" label="Customer" value="1" selected/>
+          <AntTab className="font-weight-bold" label="Prospect Customer" value="2"/>
+          <AntTab className="font-weight-bold" label="Employee" value="3" />
+          <AntTab className="font-weight-bold" label="Test Set" value="4" />
+            
         </AntTabs>
         <Typography className={classes.padding} />
-        <TabPanel value="1"><Table/></TabPanel>
+        <TabPanel value="1"><Customer/></TabPanel>
         <TabPanel value="2">Item Two</TabPanel>
         <TabPanel value="3"></TabPanel>
         <TabPanel value="4">Item Four</TabPanel>
