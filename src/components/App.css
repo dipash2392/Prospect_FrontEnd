@@ -11,3 +11,13 @@
   opacity: 1 !important;
   line-height: 0 !important;
 }
+.point{
+  cursor: pointer;
+}
+.form-control{
+  border: 0;
+}
+.MuiFormControl-root
+{
+  margin-top: -15px !important;
+}

@@ -1,4 +1,16 @@
 .closeModalIcon {
-    margin-left: -3px;
-  }
-  
+  margin-left: -7px;
+  margin-top: -7px;
+}
+
+.textfield__label{
+  color: black !important;
+  font-weight: bold !important;
+  font-size: 15px !important;
+}
+
+.submitButton
+{
+  background-color:#434F5F;
+  color: #fff;
+}

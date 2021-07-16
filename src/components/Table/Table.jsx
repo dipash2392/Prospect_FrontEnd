@@ -299,7 +299,9 @@ export default function EnhancedTable() {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-
+const toggle=()=>{
+  setOpenAddModal(false)
+}
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
@@ -381,8 +383,7 @@ export default function EnhancedTable() {
                 })}
               <TableRow>
                 {/* <TableCell rowSpan={3} /> */}
-                <TableCell className="font-weight-bold" colSpan={2} onClick={()=>{
-                  console.log(openAddModal)
+                <TableCell className="font-weight-bold point" colSpan={2} onClick={()=>{
                   setOpenAddModal(true)
                 }}>Add Prospect Set</TableCell>
                 <TableCell colSpan={2}>Delete Prospect Set</TableCell>
@@ -416,6 +417,7 @@ export default function EnhancedTable() {
       />
       <AddModal
       isOpen={openAddModal}
+      toggle={()=>toggle()}
       />
     </div>
   );
