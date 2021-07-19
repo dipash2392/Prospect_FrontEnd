@@ -152,11 +152,6 @@ function getComparator(order, orderBy) {
 
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
-  // stabilizedThis.sort((a, b) => {
-  //   const order = comparator(a[0], b[0]);
-  //   if (order !== 0) return order;
-  //   return a[1] - b[1];
-  // });
   return stabilizedThis.map((el) => el[0]);
 }
 
@@ -309,11 +304,11 @@ EnhancedTableToolbar.propTypes = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    // width: "100%",
   },
   paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2),
+    // width: "100%",
+    // marginBottom: theme.spacing(2),
   },
   table: {
     minWidth: 750,
@@ -339,7 +334,7 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [openAddModal, setOpenAddModal] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selectedProspect, setSelectedProspect] = React.useState([]);
   const [openModifyModal, setOpenModifyModal] = React.useState(false);
 
@@ -495,25 +490,25 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                       >
                         {row.prospectName}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="center">
                         {row.demographic}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {row.source}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="center">
                         {row.addedBy}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="center">
                         {dateFn.date(row.dateAdded, 110)}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {row.setType}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="right" style={{color:"#6D3886"}}>
                         {row.howMany}
                       </StyledTableCell>
-                      <StyledTableCell align="right">
+                      <StyledTableCell align="right" style={{color:"green"}}>
                         {row.details}
                       </StyledTableCell>
                     </StyledTableRow>
@@ -523,14 +518,14 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                 {/* <TableCell rowSpan={3} /> */}
                 <TableCell
                   className="font-weight-bold point"
-                  colSpan={2}
+                  colSpan={3}
                   onClick={() => {
                     setOpenAddModal(true);
                   }}
                 >
                   Add Prospect Set
                 </TableCell>
-                <TableCell colSpan={3} onClick={
+                <TableCell className="point" colSpan={3} onClick={
                   () => {
                     if (selectedProspect && selected.length === 1) {
                       handleDelete();
@@ -540,7 +535,7 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                 </TableCell>
                 <TableCell
                   className="point"
-                  colSpan={2}
+                  // colSpan={1}
                   onClick={() => {
                     if (selectedProspect && selected.length === 1) {
                       setOpenModifyModal(true);
@@ -579,10 +574,10 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
           </Table>
         </TableContainer>
       </Paper>
-      <FormControlLabel
+      {/* <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
-      />
+      /> */}
       <AddModal
         isOpen={openAddModal}
         toggle={() => toggle()}
