@@ -20,27 +20,118 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import Pagination from '@material-ui/lab/Pagination';
-import AddModal from "../AddModal/AddModal"
+import Pagination from "@material-ui/lab/Pagination";
+import AddModal from "../AddModal/AddModal";
+import dateFn from "date-fn";
+import EditModal from "../EditModal/EditModal";
+import ProspectService from "../../Services/ProspectSetsServices"
+import Swal from "sweetalert2";
+import { toast, ToastContainer } from "react-toastify";
 
-function createData(name, demo, source, addedBy, date, setType, many, details) {
-  return { name, demo, source, addedBy, date, setType, many, details };
+
+function createData(
+  prospectName,
+  demographic,
+  source,
+  addedBy,
+  dateAdded,
+  setType,
+  howMany,
+  details
+) {
+  return {
+    prospectName,
+    demographic,
+    source,
+    addedBy,
+    dateAdded,
+    setType,
+    howMany,
+    details,
+  };
 }
 
 const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
+  createData(
+    "Sales Team",
+    "Maharashtra",
+    "Add By Admin",
+    "Ramesh",
+    "30-03-2020",
+    "Sales Guys",
+    50,
+    "Info"
+  ),
+  createData(
+    "IT Users",
+    "Maharashtra",
+    "Add By Admin",
+    "Ramesh",
+    "30-03-2020",
+    "Sales Guys",
+    100,
+    "Info"
+  ),
+  createData(
+    "Sales Team",
+    "Maharashtra",
+    "Add By Admin",
+    "Kulkarni",
+    "30-03-2020",
+    "Marathi Users",
+    250,
+    "Info"
+  ),
+  createData(
+    "Marathi Users",
+    "Maharashtra",
+    "Add By Admin",
+    "Ramesh",
+    "30-03-2020",
+    "Sales Guys",
+    100,
+    "Info"
+  ),
+  createData(
+    "Sales Team",
+    "Maharashtra",
+    "Add By Admin",
+    "Kulkarni",
+    "30-03-2020",
+    "Marathi Users",
+    200,
+    "Info"
+  ),
+  createData(
+    "Marathi Users",
+    "Maharashtra",
+    "Add By Admin",
+    "Kulkarni",
+    "30-03-2020",
+    "Sales Guys",
+    150,
+    "Info"
+  ),
+  createData(
+    "Sales Team",
+    "Maharashtra",
+    "Add By Admin",
+    "Ramesh",
+    "30-03-2020",
+    "Marathi Users",
+    200,
+    "Info"
+  ),
+  createData(
+    "Marathi Users",
+    "Maharashtra",
+    "Add By Admin",
+    "Kulkarni",
+    "30-03-2020",
+    "Sales Guys",
+    150,
+    "Info"
+  ),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -61,22 +152,37 @@ function getComparator(order, orderBy) {
 
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
+  // stabilizedThis.sort((a, b) => {
+  //   const order = comparator(a[0], b[0]);
+  //   if (order !== 0) return order;
+  //   return a[1] - b[1];
+  // });
   return stabilizedThis.map((el) => el[0]);
 }
 
 const headCells = [
-  { id: "name", numeric: false, disablePadding: true, label: "Prospect Name" },
-  { id: "demo", numeric: true, disablePadding: false, label: "Demographic" },
+  {
+    id: "prospectName",
+    numeric: false,
+    disablePadding: true,
+    label: "Prospect Name",
+  },
+  {
+    id: "demographic",
+    numeric: true,
+    disablePadding: false,
+    label: "Demographic",
+  },
   { id: "source", numeric: true, disablePadding: false, label: "Source" },
   { id: "addedBy", numeric: true, disablePadding: false, label: "Added By" },
-  { id: "date", numeric: true, disablePadding: false, label: "Date Added" },
+  {
+    id: "dateAdded",
+    numeric: true,
+    disablePadding: false,
+    label: "Date Added",
+  },
   { id: "setType", numeric: true, disablePadding: false, label: "Set Type" },
-  { id: "many", numeric: true, disablePadding: false, label: "How Many" },
+  { id: "howMany", numeric: true, disablePadding: false, label: "How Many" },
   { id: "details", numeric: true, disablePadding: false, label: "Details" },
 ];
 
@@ -98,12 +204,12 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
+          {/* <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ "aria-label": "select all desserts" }}
-          />
+          /> */}
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -225,15 +331,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable({ prospectdata, refreshData }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [openAddModal,setOpenAddModal] = React.useState(false);
+  const [openAddModal, setOpenAddModal] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [selectedProspect, setSelectedProspect] = React.useState([]);
+  const [openModifyModal, setOpenModifyModal] = React.useState(false);
 
   const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -244,6 +352,31 @@ export default function EnhancedTable() {
       fontSize: 14,
     },
   }))(TableCell);
+
+  const handleDelete=async()=>{
+    Swal.fire({
+      title: "Are you sure?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, keep it",
+      confirmButtonColor: '#ff1a1a',
+      cancelButtonColor: '#4CAF50',
+    }).then(async (result) => {
+      if (result.value === true) {
+        console.log(selectedProspect)
+        let data ={id:selectedProspect[0]._id}
+        let res = await ProspectService.deleteProspectSet(data)
+        if (res.status === 200) {
+          toast.success(res.message);
+          refreshData()
+        } else {
+          toast.error(res.message);
+        }
+      }
+    })
+   
+  }
 
   const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -260,19 +393,20 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.prospectName);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, rowData) => {
+    const selectedIndex = selected.indexOf(rowData._id);
     let newSelected = [];
-
+    console.log(rowData);
+    setSelectedProspect([rowData]);
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, rowData._id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -299,17 +433,21 @@ export default function EnhancedTable() {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-const toggle=()=>{
-  setOpenAddModal(false)
-}
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const toggle = () => {
+    setOpenAddModal(false);
+  };
+  const toggleEditModal = () => {
+    setOpenModifyModal(false);
+  };
+  const isSelected = (prospectName) => selected.indexOf(prospectName) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}><hr style={{margin:0}}/>
+      <Paper className={classes.paper}>
+        <hr style={{ margin: 0 }} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -327,24 +465,24 @@ const toggle=()=>{
               rowCount={rows.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(prospectdata)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row._id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <StyledTableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.prospectName}
                       selected={isItemSelected}
                     >
                       <StyledTableCell padding="checkbox">
                         <Checkbox
+                          onClick={(event) => handleClick(event, row)}
                           checked={isItemSelected}
                           inputProps={{ "aria-labelledby": labelId }}
                         />
@@ -355,10 +493,10 @@ const toggle=()=>{
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.prospectName}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {row.demo}
+                        {row.demographic}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {row.source}
@@ -367,13 +505,13 @@ const toggle=()=>{
                         {row.addedBy}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {row.date}
+                        {dateFn.date(row.dateAdded, 110)}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {row.setType}
                       </StyledTableCell>
                       <StyledTableCell align="right">
-                        {row.many}
+                        {row.howMany}
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {row.details}
@@ -383,14 +521,44 @@ const toggle=()=>{
                 })}
               <TableRow>
                 {/* <TableCell rowSpan={3} /> */}
-                <TableCell className="font-weight-bold point" colSpan={2} onClick={()=>{
-                  setOpenAddModal(true)
-                }}>Add Prospect Set</TableCell>
-                <TableCell colSpan={2}>Delete Prospect Set</TableCell>
-                <TableCell colSpan={2}>Edit Prospect Set</TableCell>
-                <TableCell className="font-weight-bold" colSpan={1}>Import Prospect Set</TableCell>
+                <TableCell
+                  className="font-weight-bold point"
+                  colSpan={2}
+                  onClick={() => {
+                    setOpenAddModal(true);
+                  }}
+                >
+                  Add Prospect Set
+                </TableCell>
+                <TableCell colSpan={3} onClick={
+                  () => {
+                    if (selectedProspect && selected.length === 1) {
+                      handleDelete();
+                    }
+                  }}>
+                  Delete Prospect Set
+                </TableCell>
+                <TableCell
+                  className="point"
+                  colSpan={2}
+                  onClick={() => {
+                    if (selectedProspect && selected.length === 1) {
+                      setOpenModifyModal(true);
+                    }
+                  }}
+                >
+                  Edit Prospect Set
+                </TableCell>
+                {/* <TableCell className="font-weight-bold" colSpan={1}>
+                  Import Prospect Set
+                </TableCell> */}
                 <TableCell colSpan={3} align="right">
-                <Pagination count={10} page={page} size="small"   onPageChange={handleChangePage} />
+                  <Pagination
+                    count={10}
+                    page={page}
+                    size="small"
+                    onPageChange={handleChangePage}
+                  />
                   {/* <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
@@ -416,8 +584,15 @@ const toggle=()=>{
         label="Dense padding"
       />
       <AddModal
-      isOpen={openAddModal}
-      toggle={()=>toggle()}
+        isOpen={openAddModal}
+        toggle={() => toggle()}
+        refreshData={refreshData}
+      />
+      <EditModal
+        inputValues={selectedProspect}
+        isOpen={openModifyModal}
+        toggle={() => toggleEditModal()}
+        refreshData={refreshData}
       />
     </div>
   );

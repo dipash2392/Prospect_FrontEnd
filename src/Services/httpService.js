@@ -69,7 +69,6 @@ async function postFetch(apiEndpoint, data) {
     },
     body: JSON.stringify(data)
   });
-  
   response = await response.json();
   if(response.status === 401){
     toast.error(response.message);

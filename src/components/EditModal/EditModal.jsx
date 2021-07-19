@@ -1,58 +1,98 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
-import "./addModal.css";
+import "../AddModal/addModal.css";
 import CloseIcon from "@material-ui/icons/Close";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import ProspectSetsServices from "../../Services/ProspectSetsServices";
-import { toast ,ToastContainer} from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
+import dateFn from "date-fn";
 
-
-export default function AddModal({ isOpen, toggle,refreshData }) {
+export default function EditModal({
+  isOpen,
+  toggle,
+  refreshData,
+  inputValues,
+}) {
   const [show, setShow] = useState(false);
-  const [prospectInfo, setProspectInfo] = useState({
-    prospectName: "",
-    demographic: "",
-    source: "",
-    addedBy: "",
-    dateAdded: "",
-    setType: "",
-    howMany: "",
-    details: "",
-  });
+  const [prospectInfo, setProspectInfo] = useState({});
+  const [prospectName, setProspectName] = useState("");
+  const [demographic, setDemographic] = useState("");
+  const [source, setSource] = useState("");
+  const [addedBy, setAddedBy] = useState("");
+  const [dateAdded, setDateAdded] = useState("");
+  const [setType, setSetType] = useState("");
+  const [howMany, setHowMany] = useState("");
+  const [details, setDetails] = useState("");
 
-  const {
-    prospectName,
-    demographic,
-    source,
-    addedBy,
-    dateAdded,
-    setType,
-    howMany,
-    details,
-  } = prospectInfo;
+  //   const {
+  //     prospectName,
+  //     demographic,
+  //     source,
+  //     addedBy,
+  //     dateAdded,
+  //     setType,
+  //     howMany,
+  //     details,
+  //   } = prospectInfo;
 
+  useEffect(() => {
+    if (isOpen) {
+      initialFunction();
+    }
+  }, [isOpen]);
 
-  const onChangeInput = (e) => {
-    setProspectInfo({...prospectInfo ,[e.target.name]: e.target.value });
+  const initialFunction = () => {
+    console.log(inputValues[0]);
+    const {
+      prospectName,
+      demographic,
+      source,
+      addedBy,
+      dateAdded,
+      setType,
+      howMany,
+      details,
+    } = inputValues[0];
+    setProspectInfo(inputValues[0]);
+    setProspectName(prospectName);
+    setDemographic(demographic);
+    setSource(source);
+    setAddedBy(addedBy);
+    setDateAdded(dateAdded);
+    setSetType(setType);
+    setHowMany(howMany);
+    setDetails(details);
   };
 
-  const handleSubmit=async(e)=>{
-    e.preventDefault()
-    let res = await ProspectSetsServices.insertProspectSet(prospectInfo)
-    if(res.status===200){
-      toast.success(res.message)
-      refreshData()
-      toggle()
-    }else{
-      toast.success(res.message)
-      refreshData()
-      toggle()
+  const onChangeInput = (e) => {
+    setProspectInfo({ ...prospectInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let prospectSet = {
+      id: inputValues[0]._id,
+      prospectName: prospectName,
+      demographic: demographic,
+      source: source,
+      addedBy: addedBy,
+      dateAdded: dateAdded,
+      setType: setType,
+      howMany: howMany,
+      details: details,
+    };
+    let res = await ProspectSetsServices.editProspectSet(prospectSet);
+    console.log(res)
+    if (res.status === 200) {
+      toast.success(res.message);
+      refreshData();
+      toggle();
+    } else {
+      toast.success(res.message);
+      refreshData();
+      toggle();
     }
-  }
-
-
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -105,7 +145,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   label="Name Prospect Set"
                   name="prospectName"
                   value={prospectName}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setProspectName(e.target.value)}
                   InputLabelProps={{ className: "textfield__label" }}
                 />
               </div>
@@ -116,7 +156,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   label="Add Demographic	"
                   name="demographic"
                   value={demographic}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setDemographic(e.target.value)}
                   InputLabelProps={{ className: "textfield__label" }}
                 />
               </div>
@@ -127,7 +167,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   label="Source"
                   name="source"
                   value={source}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setSource(e.target.value)}
                   InputLabelProps={{ className: "textfield__label" }}
                 />
               </div>
@@ -138,7 +178,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   label="Added By"
                   name="addedBy"
                   value={addedBy}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setAddedBy(e.target.value)}
                   InputLabelProps={{ className: "textfield__label" }}
                 />
               </div>
@@ -155,7 +195,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   InputLabelProps={{ className: "textfield__label" }}
                   name="dateAdded"
                   value={dateAdded}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setDateAdded(e.target.value)}
                 />
               </div>
 
@@ -167,7 +207,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   name="setType"
                   value={setType}
                   InputLabelProps={{ className: "textfield__label" }}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setSetType(e.target.value)}
                 />
               </div>
               <div class="row form-group">
@@ -178,7 +218,7 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   name="howMany"
                   value={howMany}
                   InputLabelProps={{ className: "textfield__label" }}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setHowMany(e.target.value)}
                 />
               </div>
               <div class="row form-group">
@@ -189,20 +229,20 @@ export default function AddModal({ isOpen, toggle,refreshData }) {
                   name="details"
                   value={details}
                   InputLabelProps={{ className: "textfield__label" }}
-                  onChange={(e) => onChangeInput(e)}
+                  onChange={(e) => setDetails(e.target.value)}
                 />
               </div>
               <div class="row ">
-                <button className="btn btn submitButton" onClick={(e)=>handleSubmit(e)}>
-                  Add Prospect Set
+                <button
+                  className="btn btn submitButton"
+                  onClick={(e) => handleSubmit(e)}
+                >
+                  Edit Prospect Set
                 </button>
               </div>
             </form>
           </div>
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button onClick={toggle}>Close</Button>
-        </Modal.Footer> */}
       </Modal>
     </>
   );
