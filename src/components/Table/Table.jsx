@@ -24,10 +24,9 @@ import Pagination from "@material-ui/lab/Pagination";
 import AddModal from "../AddModal/AddModal";
 import dateFn from "date-fn";
 import EditModal from "../EditModal/EditModal";
-import ProspectService from "../../Services/ProspectSetsServices"
+import ProspectService from "../../Services/ProspectSetsServices";
 import Swal from "sweetalert2";
 import { toast, ToastContainer } from "react-toastify";
-
 
 function createData(
   prospectName,
@@ -198,14 +197,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          {/* <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          /> */}
-        </TableCell>
+        <TableCell padding="checkbox"></TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -232,10 +224,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    // paddingLeft: theme.spacing(2),
-    // paddingRight: theme.spacing(1),
-  },
   highlight:
     theme.palette.type === "light"
       ? {
@@ -303,13 +291,6 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    // width: "100%",
-  },
-  paper: {
-    // width: "100%",
-    // marginBottom: theme.spacing(2),
-  },
   table: {
     minWidth: 750,
   },
@@ -348,30 +329,29 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
     },
   }))(TableCell);
 
-  const handleDelete=async()=>{
+  const handleDelete = async () => {
     Swal.fire({
       title: "Are you sure?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "No, keep it",
-      confirmButtonColor: '#ff1a1a',
-      cancelButtonColor: '#4CAF50',
+      confirmButtonColor: "#ff1a1a",
+      cancelButtonColor: "#4CAF50",
     }).then(async (result) => {
       if (result.value === true) {
-        console.log(selectedProspect)
-        let data ={id:selectedProspect[0]._id}
-        let res = await ProspectService.deleteProspectSet(data)
+        console.log(selectedProspect);
+        let data = { id: selectedProspect[0]._id };
+        let res = await ProspectService.deleteProspectSet(data);
         if (res.status === 200) {
           toast.success(res.message);
-          refreshData()
+          refreshData();
         } else {
           toast.error(res.message);
         }
       }
-    })
-   
-  }
+    });
+  };
 
   const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -417,6 +397,7 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
   };
 
   const handleChangePage = (event, newPage) => {
+    console.log(newPage)
     setPage(newPage);
   };
 
@@ -505,10 +486,13 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                       <StyledTableCell align="right">
                         {row.setType}
                       </StyledTableCell>
-                      <StyledTableCell align="right" style={{color:"#6D3886"}}>
+                      <StyledTableCell
+                        align="right"
+                        style={{ color: "#6D3886" }}
+                      >
                         {row.howMany}
                       </StyledTableCell>
-                      <StyledTableCell align="right" style={{color:"green"}}>
+                      <StyledTableCell align="right" style={{ color: "green" }}>
                         {row.details}
                       </StyledTableCell>
                     </StyledTableRow>
@@ -525,17 +509,20 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                 >
                   Add Prospect Set
                 </TableCell>
-                <TableCell className="point" colSpan={3} onClick={
-                  () => {
+                <TableCell
+                  className="point"
+                  colSpan={2}
+                  onClick={() => {
                     if (selectedProspect && selected.length === 1) {
                       handleDelete();
                     }
-                  }}>
+                  }}
+                >
                   Delete Prospect Set
                 </TableCell>
                 <TableCell
                   className="point"
-                  // colSpan={1}
+                  colSpan={1}
                   onClick={() => {
                     if (selectedProspect && selected.length === 1) {
                       setOpenModifyModal(true);
@@ -548,13 +535,13 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                   Import Prospect Set
                 </TableCell> */}
                 <TableCell colSpan={3} align="right">
-                  <Pagination
+                  {/* <Pagination
                     count={10}
                     page={page}
                     size="small"
-                    onPageChange={handleChangePage}
-                  />
-                  {/* <TablePagination
+                    onChange={handleChangePage}
+                  /> */}
+                  <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={rows.length}
@@ -562,7 +549,7 @@ export default function EnhancedTable({ prospectdata, refreshData }) {
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-                  /> */}
+                  />
                 </TableCell>
               </TableRow>
               {emptyRows > 0 && (

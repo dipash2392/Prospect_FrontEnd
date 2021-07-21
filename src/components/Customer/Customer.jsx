@@ -4,6 +4,7 @@ import SearchBox from "../SearchBox/SearchBox";
 import PropspectService from "../../Services/ProspectSetsServices";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProspectSetsServices from "../../Services/ProspectSetsServices";
 
 export default function Customer() {
   const [data, setData] = useState([]);
@@ -25,25 +26,39 @@ export default function Customer() {
   const refreshData = async () => {
     await getAllCustoProspectSet();
   };
-  const filterOnChange = (inputValue) => {
+//   const filterOnChange = (inputValue) => {
+//     console.log(inputValue);
+//     if (inputValue === "") {
+//       setFilterData(data);
+//     } else {
+//       let value = inputValue;
+//       let prospectSet = data;
+//       let result = [];
+//       result = prospectSet.filter((prospect) => {
+//         console.log(prospect);
+//         if (
+//           prospect.prospectName.toLowerCase().search(value.toLowerCase()) !== -1
+//         ) {
+//           return prospect;
+//         }
+//       });
+//       setFilterData(result);
+//     }
+//   };
+
+const searchProspectByName = async (inputValue) => {
     console.log(inputValue);
     if (inputValue === "") {
-      setFilterData(data);
+      toast.error("Please enter value to search!");
     } else {
-      let value = inputValue;
-      let prospectSet = data;
-      let result = [];
-      result = prospectSet.filter((prospect) => {
-        console.log(prospect);
-        if (
-          prospect.prospectName.toLowerCase().search(value.toLowerCase()) !== -1
-        ) {
-          return prospect;
-        }
-      });
-      setFilterData(result);
+      let result = await ProspectSetsServices.searchProspectSetByName(inputValue);
+      console.log(result);
+      setFilterData([result]);
     }
   };
+
+
+
 
   return (
     // <div className="container">
@@ -51,7 +66,9 @@ export default function Customer() {
       <ToastContainer />
       <SearchBox
         style={{ marginTop: "-10px" }}
-        filterOnChange={filterOnChange}
+        // filterOnChange={filterOnChange}
+        refreshData={refreshData}
+        filterOnChange={searchProspectByName}
       />
       <Table prospectdata={filterData} refreshData={refreshData} />
       </>

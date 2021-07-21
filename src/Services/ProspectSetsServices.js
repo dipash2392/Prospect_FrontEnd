@@ -25,9 +25,18 @@ export async function deleteProspectSet(prospectSetID) {
   return data;
 }
 
+export async function searchProspectSetByName(value) {
+  const {
+    prospectSet
+  } = await http.get(`${apiEndpoint}/searchProspect/${value}`);
+  console.log(prospectSet);
+  return prospectSet;
+}
+
 export default {
   getProspectSet,
   insertProspectSet,
   editProspectSet,
-  deleteProspectSet
+  deleteProspectSet,
+  searchProspectSetByName
 };
